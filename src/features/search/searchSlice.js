@@ -6,19 +6,21 @@ const initialState = {
   status: 'READY',
   token: null,
   labels: null,
+  selections: null,
   issues: null
 };
 
 export const getLabels = createAsyncThunk('search/fetchLabels', (dispatch) => {
   const token = store.getState().search.token;
-  const response = fetchLabels(dispatch, token);
-  return response;
+  const responseData = fetchLabels(dispatch, token);
+  return responseData;
 });
 
 export const getIssues = createAsyncThunk('search/fetchIssues', (dispatch) => {
   const token = store.getState().search.token;
-  const response = fetchIssues(dispatch, token);
-  return response;
+  const selections = store.getState().search.selections;
+  const responseData = fetchIssues(dispatch, token, JSON.stringify(selections));
+  return responseData;
 });
 
 export const searchSlice = createSlice({
@@ -30,6 +32,9 @@ export const searchSlice = createSlice({
     },
     setLabels: (state, action) => {
       state.labels = action.payload;
+    },
+    setSelections: (state, action) => {
+      state.selections = action.payload;
     },
     setIssues: (state, action) => {
       state.issues = action.payload;
@@ -69,9 +74,13 @@ export const selectLabels = (state) => {
   return state.search.labels;
 }
 
+export const selectSelections = (state) => {
+  return state.search.selections;
+}
+
 export const selectIssues = (state) => {
   return state.search.issues;
 }
 
-export const {setToken, setLabels, setIssues} = searchSlice.actions;
+export const {setToken, setLabels, setSelections, setIssues} = searchSlice.actions;
 export default searchSlice.reducer;

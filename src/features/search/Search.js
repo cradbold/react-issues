@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {useDispatch} from 'react-redux';
-import {Form, InputGroup, Button} from 'react-bootstrap';
-import {setToken, getIssues} from './searchSlice';
+import {Container, Row, Form, InputGroup, Button} from 'react-bootstrap';
+import {setToken, getLabels} from './searchSlice';
 import {Issues} from './components/Issues';
-import styles from './Search.module.css';
+// import styles from './Search.module.css';
 
 const Search = () => {
   const dispatch = useDispatch();
@@ -11,28 +11,31 @@ const Search = () => {
 
   // RIS-188: Parameterize other GraphQL query options
   // RIS-75: Add accessibilityt/aria-label to all comps
+  // RIS-12: Add CLI->UI support for github token
   return (
-    <div>
-      <div className={styles.row}>
+    <Container>
+      <Row>
         <Form>
-          <Form.Label>GitHub Token</Form.Label>
           <InputGroup>
-            <Form.Control type="password" aria-label="GitHub Token" placeholder="Enter token..." value={token} onChange={(e) => changeToken(e.target.value)}/>
+            <InputGroup.Prepend>
+              <InputGroup.Text>GitHub Token</InputGroup.Text>
+            </InputGroup.Prepend>
+            <Form.Control type="text" aria-label="GitHub Token" placeholder="Enter token..." value={token} onChange={(e) => changeToken(e.target.value)}/>
             <InputGroup.Append>
               <Button onClick={
                 () => {
                   dispatch(setToken(token));
-                  dispatch(getIssues(dispatch));
+                  dispatch(getLabels(dispatch));
                 }
               }>Submit</Button>
             </InputGroup.Append>
           </InputGroup>
         </Form>
-      </div>
-      <div className={styles.row}>
+      </Row>
+      <Row>
         <Issues/>
-      </div>
-    </div>
+      </Row>
+    </Container>
   );
 }
 
