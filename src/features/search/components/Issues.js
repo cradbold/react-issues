@@ -5,10 +5,11 @@ import {Typeahead} from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 // RIS-43: Investigate bringing this in via props as a sub-component
-import {selectLabels, setSelections, getIssues} from '../searchSlice';
+import {selectLabels, setSelections, getIssues, selectIssues} from '../searchSlice';
 
 export const Issues = () => {
   const labels = useSelector(selectLabels);
+  const issues = useSelector(selectIssues);
   const dispatch = useDispatch();
   const [tempSelections, setTempSelections] = useState([]);
   const [showDetail, setShowDetail] = useState(false);
@@ -35,7 +36,7 @@ export const Issues = () => {
           <InputGroup.Append>
           <Button onClick={
             () => {
-              // setShowDetail(true);
+              setShowDetail(true);
               console.log(`Issues::Issues::selections: ${tempSelections}`);
               dispatch(setSelections(tempSelections));
               dispatch(getIssues(dispatch));
@@ -47,15 +48,7 @@ export const Issues = () => {
           Two characters minimum
         </Form.Text>
       </Form.Group>
-      <Modal show={showDetail} backdrop="static" size="lg" centered onHide={() => {setShowDetail(false)}}>
-        <Modal.Header closeButton>
-          <Modal.Title>Issue Details</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => {setShowDetail(false)}}>Close</Button>
-        </Modal.Footer>
-      </Modal>
+      {getIssuesRender(showDetail, setShowDetail, issues)}
       </React.Fragment>
   );
 };
@@ -73,15 +66,38 @@ const adaptLabels = (labels) => {
   }
 };
 
-// const adaptIssues = (issues) => {
-//   const issueValues = [];
-//   try {
-//     issues.repository.issues.edges.forEach((issue) => {
-//       issueValues.push(issue.node.title);
-//     });
-//   } catch (err) {
-//     console.error(`issues is unexpectedly malformed: ${JSON.stringify(issues, null, 2)}`);
-//   } finally {
-//     return issueValues;
-//   }
-// };
+const getIssuesRender = (show, setShow, rawIssues) => {
+  let issuesRender = (<React.Fragment/>);
+
+  try {
+    if (rawIssues) {
+      const issues = [];
+      // "repository":{"labels":{"edges":[{"node":{"issues":{"edges":[{"node":{"title"
+      rawIssues.repository.labels.edges.forEach((label) => {
+        label.node.issues.edges.forEach((issue) => {
+          issues.push(`* ${issue.node.title}`);
+        });
+      })
+
+      issuesRender = (
+        <Modal show={show} backdrop="static" size="lg" centered onHide={() => {setShow(false)}}>
+          <Modal.Header closeButton>
+            <Modal.Title>Issue Titles</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {issues.map((title, index) => (
+              <p id={index}>{title}</p>
+            ))}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => {setShow(false)}}>Close</Button>
+          </Modal.Footer>
+        </Modal>
+      );
+    }
+  } catch (err) {
+    console.error(`issues is unexpectedly malformed: ${JSON.stringify(rawIssues, null, 2)}`);
+  } finally {
+    return issuesRender;
+  }
+};
