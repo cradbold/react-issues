@@ -17,6 +17,7 @@ export const fetchLabels = async (dispatch, token) => {
       'Content-Type': 'application/json;charset=UTF-8',
       'Authorization': `Bearer ${token}`
     },
+
     // RIS-25: Parameterize # of issues & paginate
     data: {
       query: `
@@ -31,11 +32,7 @@ export const fetchLabels = async (dispatch, token) => {
     }
   }
 
-  // console.log(`searchClient::fetchLabels::options (outer): ${JSON.stringify(options, null, 2)}`);
-
   await axios(options).then(async (outerResponse) => {
-    // console.log(`searchClient::fetchLabels::outerResponse: ${JSON.stringify(outerResponse, null, 2)}`);
-
     const labelCount = outerResponse.data.data.repository.labels.totalCount;
 
     options.data = {
@@ -54,8 +51,6 @@ export const fetchLabels = async (dispatch, token) => {
       `
     };
 
-    // console.log(`searchClient::fetchLabels::options (inner): ${JSON.stringify(options, null, 2)}`);
-
     await axios(options).then((response) => {
       dispatch(setLabels(response.data.data));
       return response.data.data;
@@ -72,7 +67,6 @@ export const fetchIssues = async (dispatch, token, labelsString='["Component: DO
       'Content-Type': 'application/json;charset=UTF-8',
       'Authorization': `Bearer ${token}`
     },
-    // RIS-25: Parameterize # of issues & paginate
     data: {
       query: `
         query {
@@ -86,12 +80,7 @@ export const fetchIssues = async (dispatch, token, labelsString='["Component: DO
     }
   }
 
-  // console.log(`searchClient::fetchIssues::options (outer): ${JSON.stringify(options, null, 2)}`);
-
   await axios(options).then(async (outerResponse) => {
-    // console.log(`searchClient::fetchIssues::outerResponse: ${JSON.stringify(outerResponse, null, 2)}`);
-    console.log(`searchClient::fetchIssues::labelsString: ${labelsString}`);
-
     const labelCount = outerResponse.data.data.repository.labels.totalCount;
 
     options.data = {
@@ -108,13 +97,6 @@ export const fetchIssues = async (dispatch, token, labelsString='["Component: DO
                       node {
                         title
                         state
-                        labels(first:10) {
-                          edges {
-                            node {
-                              name
-                            }
-                          }
-                        }
                       }
                     }
                   }
@@ -126,13 +108,8 @@ export const fetchIssues = async (dispatch, token, labelsString='["Component: DO
       `
     };
 
-    // console.log(`searchClient::fetchIssues::options (inner): ${JSON.stringify(options, null, 2)}`);
-
     await axios(options).then((response) => {
-      console.log(`searchClient::fetchIssues::response: ${JSON.stringify(response, null, 2)}`);
-
       dispatch(setIssues(response.data.data));
-
       return response.data.data;
     });
   });

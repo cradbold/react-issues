@@ -3,28 +3,16 @@ import {useSelector, useDispatch} from 'react-redux';
 import {Form, InputGroup, Button, Modal} from 'react-bootstrap';
 import {Typeahead} from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
-// import styles from '../Search.module.css';
 
 // RIS-43: Investigate bringing this in via props as a sub-component
-// import {selectStatus, selectToken, selectLabels, setSelections, selectIssues, getIssues} from '../searchSlice';
-import {selectStatus, selectLabels, setSelections, selectIssues, getIssues} from '../searchSlice';
+import {selectLabels, setSelections, getIssues} from '../searchSlice';
 
 export const Issues = () => {
-  const status = useSelector(selectStatus);
-  // const token = useSelector(selectToken);
   const labels = useSelector(selectLabels);
-  const issues = useSelector(selectIssues);
   const dispatch = useDispatch();
   const [tempSelections, setTempSelections] = useState([]);
   const [showDetail, setShowDetail] = useState(false);
 
-  console.log(`Issues::Issues::status: ${status}`);
-  // console.log(`Issues::Issues::token: ${token}`); // Don't log private token
-  // console.log(`Issues::Issues::labels: ${JSON.stringify(labels, null, 2)}`);
-  console.log(`Issues::Issues::issues: ${JSON.stringify(issues, null, 2)}`);
-
-  // TODO: replace issues with labels; add button to fire issue search; autocomplete issue search to popup dialog
-  // labelKey="name"
   return (
     <React.Fragment>
       <Form.Group>
@@ -39,7 +27,7 @@ export const Issues = () => {
             labelKey="name"
             minLength={2}
             multiple={true}
-            options={adaptLabels(labels)}
+            options={labels ? adaptLabels(labels) : []}
             placeholder="Enter issue labels..."
             selected={tempSelections}
             onChange={setTempSelections}
@@ -85,15 +73,15 @@ const adaptLabels = (labels) => {
   }
 };
 
-const adaptIssues = (issues) => {
-  const issueValues = [];
-  try {
-    issues.repository.issues.edges.forEach((issue) => {
-      issueValues.push(issue.node.title);
-    });
-  } catch (err) {
-    console.error(`issues is unexpectedly malformed: ${JSON.stringify(issues, null, 2)}`);
-  } finally {
-    return issueValues;
-  }
-};
+// const adaptIssues = (issues) => {
+//   const issueValues = [];
+//   try {
+//     issues.repository.issues.edges.forEach((issue) => {
+//       issueValues.push(issue.node.title);
+//     });
+//   } catch (err) {
+//     console.error(`issues is unexpectedly malformed: ${JSON.stringify(issues, null, 2)}`);
+//   } finally {
+//     return issueValues;
+//   }
+// };

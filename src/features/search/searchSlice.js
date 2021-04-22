@@ -4,10 +4,10 @@ import {fetchLabels, fetchIssues} from './searchClient';
 
 const initialState = {
   status: 'READY',
-  token: null,
-  labels: null,
-  selections: null,
-  issues: null
+  token: undefined,
+  labels: undefined,
+  selections: undefined,
+  issues: undefined
 };
 
 export const getLabels = createAsyncThunk('search/fetchLabels', (dispatch) => {

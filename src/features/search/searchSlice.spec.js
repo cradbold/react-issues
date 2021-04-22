@@ -9,6 +9,7 @@ describe('search reducer', () => {
     value: 3,
     status: 'idle',
   };
+  
   it('should handle initial state', () => {
     expect(searchReducer(undefined, { type: 'unknown' })).toEqual({
       value: 0,

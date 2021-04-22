@@ -1,16 +1,14 @@
 import React from 'react';
 import Search from './features/search/Search';
+import {Jumbotron} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './ReactIssuesApp.css';
 
-// RIS-12: Remove all console logging
 const ReactIssuesApp = () => {
   return (
-    <div className="app">
-      <header className="app-header">
-        <Search/>
-      </header>
-    </div>
+    <Jumbotron fluid>
+      <Search/>
+    </Jumbotron>
   );
 }
 
