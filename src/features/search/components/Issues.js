@@ -5,6 +5,7 @@ import {Typeahead} from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 // RIS-43: Investigate bringing this in via props as a sub-component
+// RIS-233: Componetize & prettify issue visualization
 import {selectLabels, setSelections, getIssues, selectIssues} from '../searchSlice';
 
 export const Issues = () => {
