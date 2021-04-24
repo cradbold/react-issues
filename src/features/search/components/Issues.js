@@ -87,7 +87,7 @@ const getIssuesRender = (show, setShow, rawIssues) => {
           </Modal.Header>
           <Modal.Body>
             {issues.map((title, index) => (
-              <p id={index}>{title}</p>
+              <p key={index}>{title}</p>
             ))}
           </Modal.Body>
           <Modal.Footer>
